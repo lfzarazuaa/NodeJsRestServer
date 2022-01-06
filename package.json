@@ -1,0 +1,25 @@
+{
+  "name": "nodejsrestserver",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon --watch app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lfzarazuaa/NodeJsRestServer.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lfzarazuaa/NodeJsRestServer/issues"
+  },
+  "homepage": "https://github.com/lfzarazuaa/NodeJsRestServer#readme",
+  "dependencies": {
+    "nodemon": "^2.0.15"
+  }
+}
