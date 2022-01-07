@@ -1,19 +1,20 @@
 const { response, request } = require("express");
 
+const User = require("../models/user");
+
 const usersGet = (req = request, res = response) => {
   const { name, id = 0, apiKey } = req.query; // Destructure the object.
   res.json({
     msg: "get API - controller",
     name,
     id,
-    apiKey
+    apiKey,
   });
 };
 
 const usersPost = (req = request, res = response) => {
   const body = req.body;
-  const name = req.body.name;
-  const age = req.body.age;
+  const { name, age } = req.body;
   res.json({
     msg: "post API",
     body,
