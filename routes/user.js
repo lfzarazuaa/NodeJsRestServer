@@ -2,7 +2,12 @@ const { Router } = require("express");
 
 const { check } = require("express-validator"); // Validator as a middleware, before to call the function in the controller.
 
-const { verifyValidRole } = require("../helpers/db-validators"); // Import role validator reading from db.
+const {
+  verifyValidRole,
+  verifyValidRoleUpdate,
+  verifyEmailExist,
+  verifyUserExist,
+} = require("../helpers/db-validators"); // Import role validator reading from db.
 
 const { validateFields } = require("../middlewares/validateFields"); // Import Middleware for verifying the check validators.
 
@@ -20,6 +25,7 @@ router.get("/text", (req, res) => {
 });
 
 router.get("/", usersGet);
+
 router.post(
   "/", // Base Route
   [
@@ -36,12 +42,25 @@ router.post(
     //   "USER_ROLE"
     // ),
     check("role").custom(verifyValidRole),
+    check("email").custom(verifyEmailExist),
     validateFields, //Register the middleware to valiate fields instead of do it on the controller.
   ],
   usersPost // Controller Method call to proccess.
 );
-router.put("/", usersPut);
+
+router.put(
+  "/:id",
+  [
+    check("id", "This is not a valid MongoId").isMongoId(),
+    check("id").custom(verifyUserExist),
+    check("role").custom(verifyValidRoleUpdate),
+    validateFields,
+  ],
+  usersPut
+);
+
 router.patch("/", usersPatch);
+
 router.delete("/", usersDelete);
 
 module.exports = router;

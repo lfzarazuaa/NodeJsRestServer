@@ -1,10 +1,8 @@
 const { response, request } = require("express");
-const bcryptjs = require("bcryptjs");
+const { encryptUserPassword } = require("../helpers/user");
 const { parse, stringify } = require("flatted");
 
 const User = require("../models/user");
-const e = require("cors");
-const { validationResult } = require("express-validator");
 
 const usersGet = (req = request, res = response) => {
   const { name, id = 0, apiKey } = req.query; // Destructure the object.
@@ -21,18 +19,8 @@ const usersPost = async (req = request, res = response) => {
   const { name, email, password, role } = req.body;
   const user = new User({ name, email, password, role }); // Create the instance for Mongoose.
 
-  // Verify that the email is valid.
-  const emailExist = await User.findOne({ email: email });
-  if (emailExist) {
-    // Error
-    return res.status(400).json({
-      error: `The email (${email}) already exist`,
-    });
-  }
-
   // Encrypt the password
-  const salt = await bcryptjs.genSaltSync(15); // Number of interations complexity.
-  user.password = bcryptjs.hashSync(password, salt); // Generate new password.
+  user.password = encryptUserPassword(password);
 
   // Save the user
   try {
@@ -50,10 +38,25 @@ const usersPost = async (req = request, res = response) => {
   }
 };
 
-const usersPut = (req, res = response) => {
-  res.json({
-    msg: "put API",
-  });
+const usersPut = async (req = request, res = response) => {
+  const { id } = req.params;
+  const { _id, password, isCreatedByGoogle, ...otherData } = req.body;
+
+  try {
+    if (password) {
+      // Encrypt password if received.
+      otherData.password = await encryptUserPassword(password);
+    }
+
+    const user = await User.findByIdAndUpdate(id, otherData);
+
+    res.json({
+      msg: "User updated",
+      user,
+    });
+  } catch (error) {
+    res.json(error);
+  }
 };
 
 const usersPatch = (req, res = response) => {

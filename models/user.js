@@ -31,4 +31,10 @@ const UserSchema = Schema({
   }
 });
 
+// Updating the .toJSON method for making our own DTO.
+UserSchema.methods.toJSON = function () {
+  const { __v, password, ...user } = this.toObject(); // Destructuring the object.
+  return user; // User without password and version.
+}
+
 module.exports = model("User", UserSchema) // Exports as a Mongoose object.
