@@ -4,13 +4,16 @@ const { parse, stringify } = require("flatted");
 
 const User = require("../models/user");
 
-const usersGet = (req = request, res = response) => {
-  const { name, id = 0, apiKey } = req.query; // Destructure the object.
+const usersGet = async (req = request, res = response) => {
+  const { limit = 5, begin = 0 } = req.query;
+  const query = { state: true };
+  const [users, total] = await Promise.all([
+    User.find(query).limit(Number(limit)).skip(Number(begin)),
+    User.countDocuments(query),
+  ]);
   res.json({
-    msg: "get API - controller",
-    name,
-    id,
-    apiKey,
+    total,
+    users,
   });
 };
 
@@ -20,7 +23,7 @@ const usersPost = async (req = request, res = response) => {
   const user = new User({ name, email, password, role }); // Create the instance for Mongoose.
 
   // Encrypt the password
-  user.password = encryptUserPassword(password);
+  user.password = await encryptUserPassword(password);
 
   // Save the user
   try {
@@ -65,9 +68,14 @@ const usersPatch = (req, res = response) => {
   });
 };
 
-const usersDelete = (req, res = response) => {
+const usersDelete = async (req, res = response) => {
+  const { id } = req.params;
+
+  const user = await User.findByIdAndUpdate(id, {state: false})
+
   res.json({
-    msg: "delete API",
+    msg: "User deleted",
+    user
   });
 };
 

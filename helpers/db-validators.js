@@ -4,7 +4,7 @@ const User = require("../models/user"); // Import Role Schema
 // Function for validating an existing Role.
 const verifyValidRoleUpdate = async (role) => {
   if (!role) {
-    verifyValidRole(role);
+    await verifyValidRole(role);
   }
 };
 
