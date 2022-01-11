@@ -9,7 +9,8 @@ class Server {
 
     // Endpoints Strings
     this.usersPath = "/api/users";
-    
+    this.authPath = "/api/auth";
+
     // Connect to db
     this.connectDB();
 
@@ -39,6 +40,7 @@ class Server {
   routes() {
     // Middleware for routes with api/users
     this.app.use(this.usersPath, require("../routes/user"));
+    this.app.use(this.authPath, require("../routes/auth"));
   }
 
   listen() {
