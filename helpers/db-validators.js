@@ -1,5 +1,5 @@
 const Role = require("../models/role"); // Import Role Schema
-const User = require("../models/user"); // Import Role Schema
+const User = require("../models/user"); // Import User Schema
 
 // Function for validating an existing Role.
 const verifyValidRoleUpdate = async (role) => {

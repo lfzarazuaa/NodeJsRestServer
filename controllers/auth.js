@@ -20,8 +20,8 @@ const userLogin = async (req = request, res = response) => {
     const token = await generateJWT(user.id);
 
     res.json({
-      user,
       msg: "Login Ok",
+      user,
       token
     });
   } catch (error) {
@@ -32,4 +32,11 @@ const userLogin = async (req = request, res = response) => {
   }
 };
 
-module.exports = { userLogin };
+const userAuthorized = async (req = request, res = response) => {
+    res.json({
+      msg: `The token is working fine for user `,
+      userAuthenticated: req.userAuthenticated
+    });
+};
+
+module.exports = { userLogin, userAuthorized };

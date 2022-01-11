@@ -2,10 +2,13 @@ const { Router } = require("express");
 
 const { check } = require("express-validator"); // Validator as a middleware, before to call the function in the controller.
 
-const { userLogin } = require("../controllers/auth");
+const { userLogin, userAuthorized } = require("../controllers/auth");
+
 
 const { verifyEmailExist } = require("../helpers/db-validators"); // Import role validator reading from db.
 const { validateFields } = require("../middlewares/validateFields"); // Import Middleware for verifying the check validators.
+const { validateJwt } = require("../middlewares/validateWithJwt"); // Import Middleware for verifying the JWT.
+const { isAdminRole } = require("../middlewares/validateRoles"); //Validate for Admin Role.
 
 const router = Router(); // Configuring routing.
 
@@ -19,4 +22,13 @@ router.post(
   userLogin
 );
 
+router.get(
+  "/authorize",
+  [
+    validateJwt,
+    isAdminRole,
+    validateFields, //Register the middleware to valiate fields instead of do it on the controller.
+  ],
+  userAuthorized
+);
 module.exports = router;
